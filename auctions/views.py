@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing, Bid, Comment
 
 
 def index(request):
@@ -61,3 +61,33 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+def createListing(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            return render(request, 'auctions/create_listing.html')
+
+        elif request.method =='POST':
+            title = request.POST['title']
+            starting_bid = request.POST['starting_bid']
+            
+            if request.POST['img_url']:
+                img_url = request.POST['img_url']
+            else:
+                img_url = None
+
+            if request.POST['category']:
+                category = request.POST['category']
+            else:
+                category = None
+
+            listing = Listing(title=title,
+            starting_bid=starting_bid,
+            img_url=img_url,
+            category=category)
+            listing.save()
+            #return HttpResponseRedirect(reverse('')) FAZER ESSE REDIRECT QUANDO FAZER A PAGINA DE LISTING
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseRedirect(reverse('login'))
