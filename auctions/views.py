@@ -64,11 +64,17 @@ def register(request):
 
 
 def createListing(request):
+    '''
+    returns a render of the create page if the request method is GET
+    If the request method is POST, the function gets the data from html form and saves it as a listing
+    '''
+    
     if request.user.is_authenticated:
         if request.method == 'GET':
             return render(request, 'auctions/create_listing.html')
 
         elif request.method =='POST':
+            creator = request.user
             title = request.POST['title']
             starting_bid = request.POST['starting_bid']
             
@@ -82,7 +88,8 @@ def createListing(request):
             else:
                 category = None
 
-            listing = Listing(title=title,
+            listing = Listing(creator=creator,
+            title=title,
             starting_bid=starting_bid,
             img_url=img_url,
             category=category)
