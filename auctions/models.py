@@ -8,7 +8,7 @@ class User(AbstractUser):
 class Listing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
-    starting_bid = models.FloatField()
+    top_bid = models.FloatField(default=0)
     img_url = models.URLField(null=True)
     category = models.CharField(max_length=64, null=True)
 

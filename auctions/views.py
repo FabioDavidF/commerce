@@ -64,10 +64,12 @@ def register(request):
 
 
 def createListing(request):
-    '''
+    """
     returns a render of the create page if the request method is GET
     If the request method is POST, the function gets the data from html form and saves it as a listing
-    '''
+    """
+    
+    
     
     if request.user.is_authenticated:
         if request.method == 'GET':
@@ -76,7 +78,11 @@ def createListing(request):
         elif request.method =='POST':
             creator = request.user
             title = request.POST['title']
-            starting_bid = request.POST['starting_bid']
+
+            if request.POST['starting_bid'] == '':
+                top_bid = 0
+            else:
+                top_bid = request.POST['starting_bid']
             
             if request.POST['img_url']:
                 img_url = request.POST['img_url']
@@ -90,11 +96,21 @@ def createListing(request):
 
             listing = Listing(creator=creator,
             title=title,
-            starting_bid=starting_bid,
+            top_bid=top_bid,
             img_url=img_url,
             category=category)
             listing.save()
-            #return HttpResponseRedirect(reverse('')) FAZER ESSE REDIRECT QUANDO FAZER A PAGINA DE LISTING
-            return HttpResponseRedirect(reverse('index'))
+
+            return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing.id}))
     else:
         return HttpResponseRedirect(reverse('login'))
+
+def listing(request, id):
+    listing = Listing.objects.get(id=id)
+    return render(request, 'auctions/listing.html', {
+        'creator': listing.creator,
+        'title': listing.title.capitalize(),
+        'top_bid': listing.top_bid,
+        'img': listing.img_url,
+        'category': listing.category
+    })

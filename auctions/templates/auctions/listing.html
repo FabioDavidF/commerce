@@ -1,0 +1,10 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2>Listing: {{ title }}</h2>
+    <h2>Category: {{ category }}</h2>
+    <img src="{{ img_url }}" alt="Picture not available">
+    <h3>Highest bid currently: bid: {{ top_bid }}</h3>
+    <h4>Owner: {{ creator }}</h4>
+
+{% endblock %}
