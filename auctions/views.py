@@ -68,9 +68,7 @@ def createListing(request):
     returns a render of the create page if the request method is GET
     If the request method is POST, the function gets the data from html form and saves it as a listing
     """
-    
-    
-    
+      
     if request.user.is_authenticated:
         if request.method == 'GET':
             return render(request, 'auctions/create_listing.html')
@@ -106,11 +104,20 @@ def createListing(request):
         return HttpResponseRedirect(reverse('login'))
 
 def listing(request, id):
-    listing = Listing.objects.get(id=id)
     return render(request, 'auctions/listing.html', {
-        'creator': listing.creator,
-        'title': listing.title.capitalize(),
-        'top_bid': listing.top_bid,
-        'img': listing.img_url,
-        'category': listing.category
+        'listing': Listing.objects.get(id=id)
     })
+
+def watchlist(request):
+    user = request.user
+    if user.is_authenticated:
+        return render(request, 'auctions/watchlist.html', {
+            'watchlist': user.watchlist.all()
+        })
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+def addToWatchlist(request, listing):
+    listing_object = Listing.objects.get(pk=listing)
+    request.user.watchlist.add(listing_object)
+    return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing}))
