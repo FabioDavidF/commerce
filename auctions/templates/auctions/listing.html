@@ -2,7 +2,9 @@
 
 {% block body %}
     <h2>Listing: {{ listing.title.capitalize }}</h2>
-    <h2>Category: {{ listing.category }}</h2>
+    {% if listing.category != None %}
+        <h2>Category: {{ listing.category }}</h2>
+    {% endif %}
     <img src="{{ img_url }}" alt="Picture not available">
     <h3>Highest bid currently: ${{ listing.top_bid }}</h3>
     {% if user.is_authenticated %}
