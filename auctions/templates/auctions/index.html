@@ -7,7 +7,7 @@
         {% for listing in listings %}
             <li>
                 <div class="card mx-auto" style='width: 48rem; margin-bottom: 2rem;'>
-                    <a href="{% url 'listing_page' id=listing.id %}" class='card-body text-center' style='color: inherit; '>
+                    <a href="{% url 'listing_page' id=listing.id %}" class='card-body text-center text-decoration-none' style='color: inherit; '>
                         
                         <h3 class='card-title'>{{ listing.title.capitalize }}</h3>
                         {% if listing.img_url != None %}

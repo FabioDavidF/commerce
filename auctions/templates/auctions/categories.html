@@ -1,0 +1,11 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+<h1 style='text-align: center;'>Categories</h1>
+{% for category in categories %}
+    {% if category != None %}
+    <div class="card mx-auto" style='width: 24rem; margin: 2rem;'>
+       <a href="{% url 'category-page' category=category %}" class='card-body text-center text-decoration-none' style='color: inherit;'><h4>{{ category }}</h4></a>
+    </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}
