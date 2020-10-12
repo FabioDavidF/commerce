@@ -6,7 +6,7 @@
     {% for listing in watchlist %}
         <li>
             <a href="{% url 'listing_page' id=listing.id %}">
-                <h3>{{ listing.title }}</h3>
+                <h3>{{ listing.title.capitalize }}</h3>
                 {% if listing.img_url != None %}
                     <img src="{{ listing.img_url }}" alt="Image not available">
                 {% endif %}

@@ -4,14 +4,14 @@
     <h2>Listing: {{ listing.title.capitalize }}</h2>
     <h2>Category: {{ listing.category }}</h2>
     <img src="{{ img_url }}" alt="Picture not available">
-    <h3>Highest bid currently: bid: {{ listinig.top_bid }}</h3>
+    <h3>Highest bid currently: ${{ listing.top_bid }}</h3>
     {% if user.is_authenticated %}
         <form action="">
 
         </form>
     {% endif %}
     <h4>Seller: {{ listing.creator }}</h4>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and listing not in user.watchlist.all %}
         <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
             {% csrf_token %}
             <button>Add to your watchlist</button>
