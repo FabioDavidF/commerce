@@ -1,7 +1,22 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2 style='text-align: center;'>Active Listings</h2>
 
-    TODO
+    <ul style='list-style: none;'>
+        {% for listing in listings %}
+            <li>
+                <div class="card mx-auto" style='width: 48rem; margin-bottom: 2rem;'>
+                    <a href="{% url 'listing_page' id=listing.id %}" class='card-body text-center' style='color: inherit; '>
+                        
+                        <h3 class='card-title'>{{ listing.title.capitalize }}</h3>
+                        {% if listing.img_url != None %}
+                            <img src="{{ listing.img_url }}" alt="Image not available" class='card-img' style='margin-bottom: 0.7rem; max-width: 32rem;'>
+                        {% endif %}
+                        <h3 class='card-subtitle'>Top bid: ${{ listing.top_bid }}</h3>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
 {% endblock %}
