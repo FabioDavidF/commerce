@@ -78,6 +78,7 @@ def createListing(request):
         elif request.method =='POST':
             creator = request.user
             title = request.POST['title']
+            description = request.POST['description']
 
             if request.POST['starting_bid'] == '':
                 top_bid = 0
@@ -96,6 +97,7 @@ def createListing(request):
 
             listing = Listing(creator=creator,
             title=title,
+            description=description,
             top_bid=top_bid,
             img_url=img_url,
             category=category)

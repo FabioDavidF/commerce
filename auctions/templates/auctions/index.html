@@ -13,6 +13,7 @@
                         {% if listing.img_url != None %}
                             <img src="{{ listing.img_url }}" alt="Image not available" class='card-img' style='margin-bottom: 0.7rem; max-width: 32rem;'>
                         {% endif %}
+                        <h4>{{ listing.description }}</h4>
                         <h3 class='card-subtitle'>Top bid: ${{ listing.top_bid }}</h3>
                     </a>
                 </div>

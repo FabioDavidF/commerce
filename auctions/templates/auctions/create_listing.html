@@ -3,14 +3,31 @@
 {% block body %}
     <form action="{% url 'create_listing' %}" method='post'>
         {% csrf_token %}
-        <h2>Title:</h2>
-        <input type="text" name='title'>
-        <h2>Starting bid:</h2>
-        <input type="number" name='starting_bid'>
-        <h2>Image URL(optional):</h2>
-        <input type="text" name='img_url'>
-        <h2>Category(optional):</h2>
-        <input type="text" name='category'>
-        <input type="submit">
+        <div class="form-group">
+            <label for="title-input">Title</label>
+            <input type="text" name='title' id='title-input' placeholder="Enter title" class='form-control'>
+        </div>
+
+        <div class="form-group">
+            <label for="description-input">Description</label>
+            <input type="text" name='description' id="description-input" class='form-control' placeholder="Enter description">
+        </div>
+
+        <div class="form-group">
+            <label for="sb-input">Starting Bid</label>
+            <input type="number" name='starting_bid' id='sb-input' class='form-control' placeholder="Enter starting bid">
+        </div>
+        <div class="form-group">
+            <label for="img-input">Image URL(optional)</label>
+            <input type="text" name='img_url' id='img-input' class='form-control' placeholder="Enter image url">
+        </div>
+
+        <div class="form-group">
+            <label for="category-input">Category(optional)</label>
+            <input type="text" name='category' id="category-input" class='form-control' placeholder="Enter category">
+        </div>
+
+        <button type="submit" class='btn btn-primary'>Submit</button>
+        
     </form>
 {% endblock %}
