@@ -9,11 +9,7 @@ class Listing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=512, default='No description')
-    bid_quantity = models.IntegerField(default=0)
-    if bid_quantity == 0:
-        top_bid = models.FloatField(default=0)
-    elif bid_quantity > 0:
-        top_bid = models.ForeignKey('Bid')
+    top_bid = models.FloatField(default=0)
     img_url = models.URLField(null=True)
     category = models.CharField(max_length=64, null=True)
 
@@ -21,8 +17,7 @@ class Listing(models.Model):
         return self.title
 
 class Bid(models.Model):
-    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
-    value = models.FloatField()
+    pass
 
 class Comment(models.Model):
     pass
