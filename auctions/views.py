@@ -81,9 +81,12 @@ def createListing(request):
             description = request.POST['description']
 
             if request.POST['starting_bid'] == '':
-                top_bid = 0
+                starting_bid = 0
             else:
-                top_bid = request.POST['starting_bid']
+                starting_bid = request.POST['starting_bid']
+            
+            top_bid = Bid(bidder=request.user, value=starting_bid)
+            top_bid.save()
             
             if request.POST['img_url']:
                 img_url = request.POST['img_url']
@@ -98,7 +101,9 @@ def createListing(request):
             listing = Listing(creator=creator,
             title=title,
             description=description,
-            top_bid=top_bid,
+            bid_quantity=0,
+            starting_bid=starting_bid,
+            top_bid = top_bid,
             img_url=img_url,
             category=category)
             listing.save()
