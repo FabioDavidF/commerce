@@ -1,16 +1,22 @@
 {% extends 'auctions/layout.html' %}
 {% block body %}
-<h2 style='text-align: center;'>Active listings in the "{{ category }}" category</h2>
+<h1 style='text-align: center;'>Active listings in the "{{ category }}" category</h1>
 <ul style='list-style: none; margin-top: 5rem;'>
     {% for listing in listings %}
         <li>
             <div class="card mx-auto" style='width: 48rem; margin-bottom: 2rem;'>
                 <a href="{% url 'listing_page' id=listing.id %}" class='card-body text-center text-decoration-none' style='color: inherit; '>
-                    <h3 class='card-title'>{{ listing.title.capitalize }}</h3>
-                    {% if listing.img_url != None %}
-                        <img src="{{ listing.img_url }}" alt="Image not available" class='card-img' style='margin-bottom: 0.7rem; max-width: 32rem;'>
+                    <h2 class='card-title'>{{ listing.title.capitalize }}</h2>
+
+                    {% if listing.img_url != null %}
+                        <img src="{{ listing.img_url }}" alt="No image" style='max-width: 32rem;'>
+                    
+                    {% else %}
+                        <img src="https://s3-sa-east-1.amazonaws.com/base-fisc-prod/missing.png" alt="Missing url down" style='max-width: 32rem;'>
+                    
                     {% endif %}
-                    <h4>{{ listing.description }}</h4>
+
+                    <h5>{{ listing.description }}</h5>
                     <h3 class='card-subtitle'>Top bid: ${{ listing.top_bid }}</h3>
                 </a>
             </div>

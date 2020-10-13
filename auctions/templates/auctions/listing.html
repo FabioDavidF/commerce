@@ -1,24 +1,56 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <h2>Listing: {{ listing.title.capitalize }}</h2>
-    
-    {% if listing.category != None %}
-        <h2>Category: {{ listing.category }}</h2>
-    {% endif %}
-    <img src="{{ listing.img_url }}" alt="Picture not available" style='max-height: 32rem;'>
-    <h3>Highest bid currently: ${{ listing.top_bid }}</h3>
-    {% if user.is_authenticated %}
-        <form action="">
+    <div class="container">
+        <div class="row">
+            <h1 style='margin-left: 1rem;'>{{ listing.title.capitalize }}</h1>
+        </div>
+        
+        <div class="row" style='margin-top: 1rem;'>
+            <div class="col">
+                {% if listing.img_url != null %}
+                    <img src="{{ listing.img_url }}" alt="No image" style='max-width: 32rem;'>
+                
+                {% else %}
+                    <img src="https://s3-sa-east-1.amazonaws.com/base-fisc-prod/missing.png" alt="Missing url down" style='max-width: 32rem;'>
+                
+                {% endif %}
+            </div>
+            <div class="col">
+                {% if listing.description != 'No description' %}
+                    <h5>"{{ listing.description }}"</h5>
+                {% endif %}
 
-        </form>
-    {% endif %}
-    <h4>Seller: {{ listing.creator }}</h4>
-    {% if user.is_authenticated and listing not in user.watchlist.all %}
-        <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
-            {% csrf_token %}
-            <button>Add to your watchlist</button>
-        </form>
-    {% endif %}
+                {% if listing.category != None %}
+                    <h2>Category: {{ listing.category }}</h2>
+                {% endif %}
+                
+                <h3>Highest bid currently: ${{ listing.top_bid }}</h3>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'make-bid' listing=listing %}">
+                        <div class="form-group">
+                            <label for="bid-input">Bid:</label>
+                            <input type="number" class='form-control' name='bid' id='bid-input'>
+                        </div>
+                    </form>
+                {% endif %}
+
+                <h4>Seller: {{ listing.creator }}</h4>
+
+                {% if user.is_authenticated and listing not in user.watchlist.all %}
+                    <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
+                        {% csrf_token %}
+                        <button>Add to your watchlist</button>
+                    </form>
+                {% elif user.is_authenticated and listing in user.watchlist.all %}
+                    <form action="{% url 'remove-watchlist' listing=listing.id %}" method='post'>
+                        {% csrf_token %}
+                        <button class='btn border border-secondary'>Remove from your watchlist</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
 
 {% endblock %}

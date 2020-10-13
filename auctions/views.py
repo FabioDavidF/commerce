@@ -126,6 +126,11 @@ def addToWatchlist(request, listing):
     request.user.watchlist.add(listing_object)
     return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing}))
 
+def removeFromWatchlist(request, listing):
+    listing_object = Listing.objects.get(pk=listing)
+    request.user.watchlist.remove(listing_object)
+    return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing}))
+
 def categories(request):
     return render(request, 'auctions/categories.html', {
         'categories': Listing.objects.values_list('category', flat=True)
@@ -136,3 +141,4 @@ def categoryPage(request, category):
         'listings': Listing.objects.filter(category__iexact=category),
         'category': category
     })
+
