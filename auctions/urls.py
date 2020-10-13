@@ -14,5 +14,5 @@ urlpatterns = [
     path('remove-<int:listing>', views.removeFromWatchlist, name='remove-watchlist'),
     path('categories', views.categories, name='categories'),
     path('categories/<category>', views.categoryPage, name='category-page'),
-    path('make-bid', views.makeBid, name='make-bid')
+    path('make-bid/<int:id>', views.makeBid, name='make-bid')
 ]

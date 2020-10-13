@@ -142,3 +142,18 @@ def categoryPage(request, category):
         'category': category
     })
 
+def makeBid(request, id):
+    value = int(request.POST['bid'])
+    listing = Listing.objects.get(pk=id)
+    if value > listing.top_bid:
+        bidder = request.user
+        bid = Bid(bidder=bidder, value=value)
+        if bid.value > listing.top_bid:
+            listing.top_bid = bid.value
+            listing.save()
+            bid.save()
+            return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
+        else:
+            return HttpResponse('Bid must be higher than current top bid')
+    else:
+        return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
