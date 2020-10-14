@@ -165,3 +165,16 @@ def closeListing(request, id):
     listing.is_active = False
     listing.save()
     return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
+
+def addComment(request, id):
+    if request.method == 'POST':
+        author = request.user
+        content = request.POST['comment']
+        comment = Comment(author=author, content=content)
+        comment.save()
+        listing = Listing.objects.get(pk=id)
+        listing.comments.add(comment)
+        listing.save()
+        return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
+    else:
+        return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))

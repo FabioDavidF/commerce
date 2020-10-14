@@ -15,6 +15,7 @@ class Listing(models.Model):
     img_url = models.URLField(null=True)
     category = models.CharField(max_length=64, null=True)
     is_active = models.BooleanField(default=True)
+    comments = models.ManyToManyField('Comment', blank=True)
 
     def __str__(self):
         return self.title

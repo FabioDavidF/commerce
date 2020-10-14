@@ -19,6 +19,8 @@
                     {% endif %}
                 </div>
                 <div class="col">
+                    <h4>Seller: {{ listing.creator }}</h4>
+                    
                     {% if listing.description != 'No description' %}
                         <h5>"{{ listing.description }}"</h5>
                     {% endif %}
@@ -39,33 +41,53 @@
                             </div>
                         </form>
                     {% endif %}
-
-                    <h4>Seller: {{ listing.creator }}</h4>
-
-                    {% if user.is_authenticated and listing not in user.watchlist.all %}
-                        <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
-                            {% csrf_token %}
-                            <button>Add to your watchlist</button>
-                        </form>
-                    {% elif user.is_authenticated and listing in user.watchlist.all %}
-                        <form action="{% url 'remove-watchlist' listing=listing.id %}" method='post'>
-                            {% csrf_token %}
-                            <button class='btn border border-secondary'>Remove from your watchlist</button>
-                        </form>
-                    {% endif %}
-
+                    
                     {% if user == listing.creator and listing.is_active %}
                     <form action="{% url 'close-listing' id=listing.id %}" method='post' style='margin-top: 0.5rem;'>
                         {% csrf_token %}
                         <button class='btn border border-secondary'>Close listing</button>
                     </form>
                     {% endif %}
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'add-comment' id=listing.id%}" method="post" style='margin-top: 1rem;'>
+                            {% csrf_token %}
+                            <label for="comment_input">Add comment:</label>
+                            <input type="text" id='comment_input', name='comment' class='form-control'>
+                            <button class='btn btn-primary' style='margin-top: 0.5rem;'>Add</button>
+                        </form>
+                    {% endif %}
 
+                    {% if user.is_authenticated and listing not in user.watchlist.all %}
+                        <form action="{% url 'add-watchlist' listing=listing.id %}" method='post' style='margin-top: 1rem;'>
+                            {% csrf_token %}
+                            <button class='btn btn-primary'>Add to your watchlist</button>
+                        </form>
+                    {% elif user.is_authenticated and listing in user.watchlist.all %}
+                        <form action="{% url 'remove-watchlist' listing=listing.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class='btn border border-secondary' style='margin-top: 1rem;'>Remove from your watchlist</button>
+                        </form>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+        <div class="container border border-light" style='margin-top: 2rem;'>
+            <h1 style='margin-top: 1rem;'>Comments</h1>
+
+            {% for comment in listing.comments.all %}
+                <div class="container border border-secondary" style='margin-bottom: 1rem;'>
+                    <div class="row justify-content-start">
+                        <h5>{{ comment.author.username }}</h4>
+                    </div>
+                    <div class="row">
+                        <p>"{{ comment.content }}"</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
     {% else %}
-        <div class="container">
+        <div class="container border border-light">
 
             <div class="row">
                 <h1 style='margin-left: 1rem;'>{{ listing.title.capitalize }}</h1>
@@ -93,6 +115,21 @@
                     {% endif %}
                 </div>
             </div>
+
+        </div>
+        <div class="container border border-light" style='margin-top: 2rem;'>
+            <h1 style='margin-top: 1rem;'>Comments</h1>
+
+            {% for comment in listing.comments.all %}
+                <div class="container border border-secondary" style='margin-bottom: 1rem;'>
+                    <div class="row justify-content-start">
+                        <h5>{{ comment.author.username }}</h4>
+                    </div>
+                    <div class="row">
+                        <p>"{{ comment.content }}"</p>
+                    </div>
+                </div>
+            {% endfor %}
 
         </div>
     {% endif %}    
