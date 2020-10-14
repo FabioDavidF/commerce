@@ -51,6 +51,13 @@
                         <button class='btn border border-secondary'>Remove from your watchlist</button>
                     </form>
                 {% endif %}
+
+                {% if user == listing.creator and listing.is_active %}
+                <form action="{% url 'close-listing' id=listing.id %}" method='post' style='margin-top: 0.5rem;'>
+                    {% csrf_token %}
+                    <button class='btn border border-secondary'>Close listing</button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>

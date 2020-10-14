@@ -14,6 +14,7 @@ class Listing(models.Model):
     top_bid = models.ForeignKey('Bid', default=0, on_delete=models.SET_DEFAULT)
     img_url = models.URLField(null=True)
     category = models.CharField(max_length=64, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

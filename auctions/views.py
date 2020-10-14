@@ -162,3 +162,8 @@ def makeBid(request, id):
             return HttpResponse('Bid must be higher than current top bid')
     else:
         return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
+
+def closeListing(request, id):
+    listing = Listing.objects.get(pk=id)
+    listing.is_active = False
+    listing.save()
