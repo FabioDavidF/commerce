@@ -1,66 +1,100 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <h1 style='margin-left: 1rem;'>{{ listing.title.capitalize }}</h1>
-        </div>
-        
-        <div class="row" style='margin-top: 1rem;'>
-            <div class="col">
-                {% if listing.img_url != null %}
-                    <img src="{{ listing.img_url }}" alt="No image" style='max-width: 32rem;'>
-                
-                {% else %}
-                    <img src="https://s3-sa-east-1.amazonaws.com/base-fisc-prod/missing.png" alt="Missing url down" style='max-width: 32rem;'>
-                
-                {% endif %}
+
+    {% if listing.is_active %}
+        <div class="container">
+            <div class="row">
+                <h1 style='margin-left: 1rem;'>{{ listing.title.capitalize }}</h1>
             </div>
-            <div class="col">
-                {% if listing.description != 'No description' %}
-                    <h5>"{{ listing.description }}"</h5>
-                {% endif %}
+            
+            <div class="row" style='margin-top: 1rem;'>
+                <div class="col">
+                    {% if listing.img_url != null %}
+                        <img src="{{ listing.img_url }}" alt="No image" style='max-width: 32rem;'>
+                    
+                    {% else %}
+                        <img src="https://s3-sa-east-1.amazonaws.com/base-fisc-prod/missing.png" alt="Missing url down" style='max-width: 32rem;'>
+                    
+                    {% endif %}
+                </div>
+                <div class="col">
+                    {% if listing.description != 'No description' %}
+                        <h5>"{{ listing.description }}"</h5>
+                    {% endif %}
 
-                {% if listing.category != None %}
-                    <h2>Category: {{ listing.category }}</h2>
-                {% endif %}
-                
-                <h3>Highest bid currently: ${{ listing.top_bid.value }}</h3>
+                    {% if listing.category != None %}
+                        <h2>Category: {{ listing.category }}</h2>
+                    {% endif %}
+                    
+                    <h3>Highest bid currently: ${{ listing.top_bid.value }}</h3>
 
-                {% if user.is_authenticated %}
-                    <form action="{% url 'make-bid' id=listing.id %}" method='post'>
+                    {% if user.is_authenticated and user != listing.creator %}
+                        <form action="{% url 'make-bid' id=listing.id %}" method='post'>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="bid-input">Bid:</label>
+                                <input type="number" class='form-control' name='bid' id='bid-input' value='{{ listing.top_bid }}'>
+                                <button class="btn btn-primary" type="submit" style='margin-top: 0.5rem;'>Bid</button>
+                            </div>
+                        </form>
+                    {% endif %}
+
+                    <h4>Seller: {{ listing.creator }}</h4>
+
+                    {% if user.is_authenticated and listing not in user.watchlist.all %}
+                        <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
+                            {% csrf_token %}
+                            <button>Add to your watchlist</button>
+                        </form>
+                    {% elif user.is_authenticated and listing in user.watchlist.all %}
+                        <form action="{% url 'remove-watchlist' listing=listing.id %}" method='post'>
+                            {% csrf_token %}
+                            <button class='btn border border-secondary'>Remove from your watchlist</button>
+                        </form>
+                    {% endif %}
+
+                    {% if user == listing.creator and listing.is_active %}
+                    <form action="{% url 'close-listing' id=listing.id %}" method='post' style='margin-top: 0.5rem;'>
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="bid-input">Bid:</label>
-                            <input type="number" class='form-control' name='bid' id='bid-input' value='{{ listing.top_bid }}'>
-                            <button class="btn btn-primary" type="submit" style='margin-top: 0.5rem;'>Bid</button>
-                        </div>
+                        <button class='btn border border-secondary'>Close listing</button>
                     </form>
-                {% endif %}
+                    {% endif %}
 
-                <h4>Seller: {{ listing.creator }}</h4>
-
-                {% if user.is_authenticated and listing not in user.watchlist.all %}
-                    <form action="{% url 'add-watchlist' listing=listing.id %}" method='post'>
-                        {% csrf_token %}
-                        <button>Add to your watchlist</button>
-                    </form>
-                {% elif user.is_authenticated and listing in user.watchlist.all %}
-                    <form action="{% url 'remove-watchlist' listing=listing.id %}" method='post'>
-                        {% csrf_token %}
-                        <button class='btn border border-secondary'>Remove from your watchlist</button>
-                    </form>
-                {% endif %}
-
-                {% if user == listing.creator and listing.is_active %}
-                <form action="{% url 'close-listing' id=listing.id %}" method='post' style='margin-top: 0.5rem;'>
-                    {% csrf_token %}
-                    <button class='btn border border-secondary'>Close listing</button>
-                </form>
-                {% endif %}
             </div>
         </div>
     </div>
-    
+    {% else %}
+        <div class="container">
+
+            <div class="row">
+                <h1 style='margin-left: 1rem;'>{{ listing.title.capitalize }}</h1>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    {% if listing.img_url != null %}
+                        <img src="{{ listing.img_url }}" alt="No image" style='max-width: 32rem;'>
+                    
+                    {% else %}
+                        <img src="https://s3-sa-east-1.amazonaws.com/base-fisc-prod/missing.png" alt="Missing url down" style='max-width: 32rem;'>
+                    
+                    {% endif %}
+                </div>
+
+                <div class="col">
+                    <h1>The auction has ended</h1>
+                    <h4>The top bid was ${{ listing.top_bid.value }}</h4>
+
+                    {% if user.is_authenticated and user == listing.top_bid.bidder %}
+                        <div class="border border-success" style='margin-top: 2rem;'><h5 style='text-align: center;'>You won this auction, Congratulations!</h5></div>
+                    {% else %}
+                        <div class="border border-warning" style='margin-top: 2rem;'><h5 style='text-align: center;'>Someone else won this auction</h5></div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    {% endif %}    
 
 {% endblock %}

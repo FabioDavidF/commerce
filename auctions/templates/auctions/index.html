@@ -5,6 +5,7 @@
 
     <ul style='list-style: none;'>
         {% for listing in listings %}
+        {% if listing.is_active %}
             <li>
                 <div class="card mx-auto" style='width: 48rem; margin-bottom: 2rem;'>
                     <a href="{% url 'listing_page' id=listing.id %}" class='card-body text-center text-decoration-none' style='color: inherit; '>
@@ -23,6 +24,7 @@
                     </a>
                 </div>
             </li>
+            {% endif %}
         {% endfor %}
         </ul>
 {% endblock %}
