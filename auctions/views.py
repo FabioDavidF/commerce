@@ -113,12 +113,19 @@ def createListing(request):
         return HttpResponseRedirect(reverse('login'))
 
 def listing(request, id):
+    """
+    Returns a render to the listing page
+    """
     return render(request, 'auctions/listing.html', {
         'listing': Listing.objects.get(id=id)
     })
 
 def watchlist(request):
+    """
+    Returns a render of the Watchlist page based on the request user
+    """
     user = request.user
+
     if user.is_authenticated:
         return render(request, 'auctions/watchlist.html', {
             'watchlist': user.watchlist.all()
@@ -127,29 +134,45 @@ def watchlist(request):
         return HttpResponseRedirect(reverse('login'))
 
 def addToWatchlist(request, listing):
+    """
+    Adds a listing to the request's user's watchlist
+    """
     listing_object = Listing.objects.get(pk=listing)
     request.user.watchlist.add(listing_object)
     return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing}))
 
 def removeFromWatchlist(request, listing):
+    """
+    Removes listing from user's watchlist
+    """
     listing_object = Listing.objects.get(pk=listing)
     request.user.watchlist.remove(listing_object)
     return HttpResponseRedirect(reverse('listing_page', kwargs={'id': listing}))
 
 def categories(request):
+    """
+    Returns a render of the categories page
+    """
     return render(request, 'auctions/categories.html', {
         'categories': Listing.objects.values_list('category', flat=True)
     })
 
 def categoryPage(request, category):
+    """
+    Returns a render of the individual category page, that contains all the listings that belong to said category
+    """
     return render(request, 'auctions/category.html', {
         'listings': Listing.objects.filter(category__iexact=category),
         'category': category
     })
 
 def makeBid(request, id):
+    """
+    Verifies if the bid value is greater than the listing's top bid value, if said condition is met, creates a bid with said value and sets the listing's top bid to be this created bid
+    """
     value = int(request.POST['bid'])
     listing = Listing.objects.get(pk=id)
+
     if value > listing.top_bid.value:
         bidder = request.user
         bid = Bid(bidder=bidder, value=value)
@@ -161,12 +184,18 @@ def makeBid(request, id):
         return HttpResponse('Bid must be higher than current top bid')
 
 def closeListing(request, id):
+    """
+    Closes listing
+    """
     listing = Listing.objects.get(pk=id)
     listing.is_active = False
     listing.save()
     return HttpResponseRedirect(reverse('listing_page', kwargs={'id': id}))
 
 def addComment(request, id):
+    """
+    Makes sure that the request method is POST, and creates a comment with the passed content from the template
+    """
     if request.method == 'POST':
         author = request.user
         content = request.POST['comment']
